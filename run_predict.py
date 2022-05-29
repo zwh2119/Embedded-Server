@@ -1,3 +1,4 @@
+import json
 import threading
 import subprocess
 import os
@@ -9,8 +10,9 @@ _stop = threading.Event()
 cur_result = ''
 
 
-def predict(algo) -> None:
+def predict(algo_inf) -> None:
     global cur_result
+    entry_point = algo_inf['entrypoint']['predict']
     print('Starting collecting')
     proc_data = subprocess.Popen(
         ["/usr/bin/env", "python3" 'collect.py'],
@@ -21,7 +23,7 @@ def predict(algo) -> None:
     )
     print('Starting predicting')
     proc_algo = subprocess.Popen(
-        ['/usr/bin/env', 'python3', 'predict.py', f'../device_data/model/{algo}'],
+        ['/usr/bin/env', 'python3', 'predict.py', f'../device_data/model/{algo_inf["name"]}'],
         cwd='al',
         stdin=proc_data.stdout,
         stdout=subprocess.PIPE,
@@ -47,13 +49,16 @@ def predict(algo) -> None:
 
 def start() -> bool:
     global _task
+    with open('al/algo.json', 'r') as f:
+        algo_list = json.load(f)
     algo = device_solution.cur_algo
+    algo_inf = algo_list[algo] if algo != '' else {}
     if algo == '' or not os.path.exists(f'device_data/model/{algo}'):
         return False
     if device_solution.running:
         return False
     stop()
-    _task = threading.Thread(target=predict, args=(algo,))
+    _task = threading.Thread(target=predict, args=(algo_inf,))
     _task.start()
     return True
 

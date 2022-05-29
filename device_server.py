@@ -193,6 +193,9 @@ def test_device():
     return download_file
 
 
+if not run_predict.start():
+    print('Predicting program not running..')
+
+
 if __name__ == '__main__':
-    run_predict.start()
     device_server.run(host='0.0.0.0', port=8088, debug=True)

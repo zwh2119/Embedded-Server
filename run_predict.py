@@ -12,7 +12,10 @@ cur_result = ''
 
 def predict(algo_inf) -> None:
     global cur_result
+    pos_dir = os.path.abspath('./al')
     entry_point = algo_inf['entrypoint']['predict']
+    entry_point = [x.replace('$ALGO', pos_dir) for x in entry_point]
+    entry_point.append(f'../device_data/model/{algo_inf["name"]}')
     print('Starting collecting')
     proc_data = subprocess.Popen(
         ["/usr/bin/env", "python3" 'collect.py'],
@@ -23,7 +26,7 @@ def predict(algo_inf) -> None:
     )
     print('Starting predicting')
     proc_algo = subprocess.Popen(
-        ['/usr/bin/env', 'python3', 'predict.py', f'../device_data/model/{algo_inf["name"]}'],
+        entry_point,
         cwd='al',
         stdin=proc_data.stdout,
         stdout=subprocess.PIPE,

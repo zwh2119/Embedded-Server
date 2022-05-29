@@ -8,11 +8,12 @@ _task = threading.Thread()
 _stop = threading.Event()
 cur_result = ''
 
-def predict() -> None:
+
+def predict(algo) -> None:
     global cur_result
     print('Starting collecting')
     proc_data = subprocess.Popen(
-        ['/root/miniconda3/envs/server/bin/python', 'collect.py'],
+        ["/usr/bin/env", "python3" 'collect.py'],
         cwd='db',
         stdin=subprocess.DEVNULL,
         stdout=subprocess.PIPE,
@@ -20,13 +21,13 @@ def predict() -> None:
     )
     print('Starting predicting')
     proc_algo = subprocess.Popen(
-        ['/root/miniconda3/envs/server/bin/python', 'predict.py', '../device_data/model'],
+        ['/usr/bin/env', 'python3', 'predict.py', f'../device_data/model/{algo}'],
         cwd='al',
         stdin=proc_data.stdout,
         stdout=subprocess.PIPE,
         bufsize=0,
     )
-    assert proc_algo.stdout # make mypy happy
+    assert proc_algo.stdout
     for line in proc_algo.stdout:
         cur_result = line.decode().strip()
         if _stop.is_set():
@@ -46,12 +47,13 @@ def predict() -> None:
 
 def start() -> bool:
     global _task
-    if not os.path.exists('device_data/model'):
+    algo = device_solution.cur_algo
+    if algo == '' or not os.path.exists(f'device_data/model/{algo}'):
         return False
     if device_solution.running:
         return False
     stop()
-    _task = threading.Thread(target=predict)
+    _task = threading.Thread(target=predict, args=(algo,))
     _task.start()
     return True
 

@@ -1,7 +1,6 @@
 Beaker==1.11.0
 bottle==0.12.18
 bleak==0.14.3
-bleak-winrt==1.1.1
 certifi==2021.10.8
 cffi==1.15.0
 charset-normalizer==2.0.12

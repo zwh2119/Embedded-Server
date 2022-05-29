@@ -85,7 +85,7 @@ def get_model():
     return download_file
 
 
-@device_server.put('/model/<algo>')
+@device_server.put('/model/<al>')
 def put_model(algo):
 
     if not device_solution.check_algo(algo):

@@ -1,3 +1,4 @@
+import shutil
 import tarfile
 
 from bottle import *
@@ -84,19 +85,33 @@ def get_model():
     return download_file
 
 
-@device_server.put('/model')
-def put_model():
+@device_server.put('/model/<algo>')
+def put_model(algo):
+
+    if not device_solution.check_algo(algo):
+        return get_error(404, 'Algorithm not found')
+
     signature = request.headers.get("Signature")
     file = request.files.get('model')
 
     if file is None:
         return get_error(400, 'Invalid request content')
 
-    file_name = device_solution.save_device_model(file)
-    print('file:',file_name)
-    print('sig:', signature)
-    if signature is None or not timestamp_solution.check_signature(file_name, signature):
+    temp_dir = tempfile.mkdtemp()
+    temp_path = os.path.join(temp_dir, 'model')
+    # file_name = device_solution.save_device_model(file)
+    file.save(temp_path, overwrite=True)
+    # print('file:',file_name)
+    # print('sig:', signature)
+    if signature is None or not timestamp_solution.check_signature(temp_path, signature):
         return get_error(400, 'Invalid signature')
+
+    os.replace(temp_path, f'./device_data/model/{algo}')
+    shutil.rmtree(temp_dir)
+
+    device_solution.cur_algo = algo
+
+    run_predict.start()
 
     file_type = request.headers.get('Content-Type')
 
@@ -108,7 +123,7 @@ def put_model():
 
 @device_server.get('/calibration/pending')
 def get_metadata_pending_calibrations():
-    with open('metadata.json', 'r') as file:
+    with open('al/motions.json', 'r') as file:
         motions = json.load(file)
     result = []
     for motion in motions:
@@ -121,7 +136,7 @@ def get_metadata_pending_calibrations():
 @device_server.post('/calibration/<motion>')
 def calibrate_motion(motion):
 
-    with open('metadata.json', 'r') as file:
+    with open('al/motions.json', 'r') as file:
         motions = json.load(file)
 
     for i in motions:
@@ -157,7 +172,6 @@ def get_calibration_data():
 
     # response.add_header('Signature', timestamp_solution.sign_file(tar))
 
-
     download_file = static_file('calibration.tar.gz', root='./device_data', download=True, mimetype='application/x-tar+gzip')
     download_file.set_header('Signature', timestamp_solution.sign_file(tar_file))
 
@@ -179,6 +193,9 @@ def test_device():
     return download_file
 
 
+if not run_predict.start():
+    print('Predicting program not running..')
+
+
 if __name__ == '__main__':
-    run_predict.start()
     device_server.run(host='0.0.0.0', port=8088, debug=True)

@@ -23,7 +23,7 @@ def get_device_status():
             algo_inf  = ''
 
     status = {
-        "id": dev_id,  # string, the device UUID
+        "id": str(dev_id),  # string, the device UUID
         "battery": 90,  # int, percentage of battery
         "charging": True,  # bool, true if power connected
         "algorithm": algo_inf,
@@ -114,3 +114,4 @@ def check_algo(algo):
             return algo in al_list.keys()
     except:
         return False
+

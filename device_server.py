@@ -22,7 +22,7 @@ def get_error(code, text):
 def get_success(dict_content=None):
     res = HTTPResponse()
     res.status = 200
-    print("dict:", dict_content)
+    # print("dict:", dict_content)
     if dict_content is None:
         res.body = 'success'
     else:
@@ -63,11 +63,11 @@ def get_status_device():
 @device_server.get('/ticket')
 def get_device_ticket():
     ts = request.params.ts
-    print(ts)
+    # print(ts)
     if ts is None or not timestamp_solution.check_timestamp_format(ts):
         return get_error(400, 'Invalid timestamp')
     auth = timestamp_solution.get_device_ticket(ts)
-    print("auth:", auth)
+    # print("auth:", auth)
     return get_success(auth)
 
 

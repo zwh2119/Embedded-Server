@@ -57,12 +57,15 @@ def start() -> bool:
     algo = device_solution.cur_algo
     algo_inf = algo_list[algo] if algo != '' else {}
     if algo == '' or not os.path.exists(f'device_data/model/{algo}'):
+        print('-No device model')
         return False
     if device_solution.running:
+        print('-Prediction is Running')
         return False
     stop()
     _task = threading.Thread(target=predict, args=(algo_inf,))
     _task.start()
+    print('Run predicting')
     return True
 
 

@@ -74,7 +74,7 @@ def get_device_ticket():
 @device_server.get('/model')
 def get_model():
     model_file = device_solution.get_device_model()
-    if not os.path.isfile('model_file'):
+    if not os.path.isfile(model_file):
         return get_error(404, 'No device model')
 
     file_name = os.path.split(model_file)[1]

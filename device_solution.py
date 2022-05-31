@@ -8,7 +8,10 @@ import uuid
 
 running = False
 
-cur_algo = ''
+with open('al/algo.json', 'r') as f:
+    tmp_algo_list = json.load(f)
+cur_algo = list(tmp_algo_list.keys())[0] if list(tmp_algo_list.keys()) != [] else ''
+
 
 
 def get_device_status():

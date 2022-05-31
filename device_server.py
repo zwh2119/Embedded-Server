@@ -106,7 +106,7 @@ def put_model(algo):
     if signature is None or not timestamp_solution.check_signature(temp_path, signature):
         return get_error(400, 'Invalid signature')
 
-    os.replace(temp_path, f'./device_data/model/{algo}')
+    file.save(f'./device_data/model/{algo}', overwrite=True)
     shutil.rmtree(temp_dir)
 
     device_solution.cur_algo = algo

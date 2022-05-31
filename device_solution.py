@@ -39,6 +39,17 @@ def get_device_model():
         return f"./device_data/model/{cur_algo}"
 
 
+def clear_device_model():
+    model_dir = './device_data/model'
+    for model in os.listdir(model_dir):
+        model_path = os.path.join(model_dir, model)
+        if os.path.isfile(model_path):
+            os.unlink(model_path)
+            print(f'delete model {model_path}')
+        else:
+            print(f'{model_path} error')
+
+
 # def save_device_model(file):
 #     file.save('./device_data/model', overwrite=True)
 #     return './device_data/model'

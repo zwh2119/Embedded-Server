@@ -121,6 +121,12 @@ def put_model(algo):
     return get_success()
 
 
+@device_server.delete('/model')
+def delete_local_model():
+    device_solution.clear_device_model()
+    return get_success()
+
+
 @device_server.get('/calibration/pending')
 def get_metadata_pending_calibrations():
     with open('al/motions.json', 'r') as file:

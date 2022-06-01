@@ -50,6 +50,7 @@ def get_success(dict_content=None):
 #         request.environ['REQUEST_METHOD'] = HTTP_ACCESS_CONTROL_REQUEST_METHOD
 #
 
+
 @device_server.route('/', method='HEAD')
 def confirm_link():
     return get_success()

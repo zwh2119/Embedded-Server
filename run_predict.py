@@ -18,7 +18,7 @@ def predict(algo_inf) -> None:
     entry_point.append(f'../device_data/model/{algo_inf["name"]}')
     print('Starting collecting')
     proc_data = subprocess.Popen(
-        ["/usr/bin/env", "python3" 'collect.py'],
+        ["/usr/bin/env", "python3", "collect.py"],
         cwd='db',
         stdin=subprocess.DEVNULL,
         stdout=subprocess.PIPE,

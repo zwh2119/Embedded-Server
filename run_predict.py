@@ -52,11 +52,13 @@ def predict(algo_inf) -> None:
 
 def start() -> bool:
     global _task
-    with open('al/algo.json', 'r') as f:
-        algo_list = json.load(f)
-    algo = device_solution.cur_algo
-    algo_inf = algo_list[algo] if algo != '' else {}
-    if algo == '' or not os.path.exists(f'device_data/model/{algo}'):
+    # with open('al/algo.json', 'r') as f:
+    #     algo_list = json.load(f)
+    with open('cur_algo.json', 'r') as f:
+        cur_algo = json.load(f)
+    algo = cur_algo['name']
+    algo_inf = cur_algo
+    if algo is None or not os.path.exists(f'device_data/model/{algo}'):
         print('-No device model')
         return False
     if device_solution.running:

@@ -109,7 +109,12 @@ def put_model(algo):
     file.save(f'./device_data/model/{algo}', overwrite=True)
     shutil.rmtree(temp_dir)
 
-    device_solution.cur_algo = algo
+    with open('al/algo.json', 'r') as af:
+        algo_list = json.load(af)
+        cur_algo = algo_list[algo]
+    # device_solution.cur_algo = algo
+    with open('cur_algo.json', 'w') as f:
+        json.dump(cur_algo, f)
 
     run_predict.start()
 

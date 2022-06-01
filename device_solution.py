@@ -8,9 +8,9 @@ import uuid
 
 running = False
 
-with open('al/algo.json', 'r') as f:
-    tmp_algo_list = json.load(f)
-cur_algo = list(tmp_algo_list.keys())[0] if list(tmp_algo_list.keys()) != [] else ''
+# with open('al/algo.json', 'r') as f:
+#     tmp_algo_list = json.load(f)
+# cur_algo = list(tmp_algo_list.keys())[0] if list(tmp_algo_list.keys()) != [] else ''
 
 
 
@@ -18,28 +18,23 @@ def get_device_status():
     with open('id', 'r') as f:
         dev_id = uuid.UUID(f.read().strip())
 
-    with open('al/algo.json', 'r') as f:
-        algo_list = json.load(f)
-        if cur_algo != '':
-            algo_inf = algo_list[cur_algo]
-        else:
-            algo_inf  = ''
-
+    with open('cur_algo.json', 'r') as f:
+        cur_algo = json.load(f)
     status = {
         "id": str(dev_id),  # string, the device UUID
         "battery": 90,  # int, percentage of battery
         "charging": True,  # bool, true if power connected
-        "algorithm": algo_inf,
+        "algorithm": cur_algo,
         "prediction": run_predict.cur_result,  # string, the current detected motion
     }
     return status
 
 
 def get_device_model():
-    if cur_algo == '':
-        return None
-    else:
-        return f"./device_data/model/{cur_algo}"
+    with open('cur_algo.json', 'r') as f:
+        cur_algo = json.load(f)
+
+    return f"./device_data/model/{cur_algo['name']}"
 
 
 def clear_device_model():

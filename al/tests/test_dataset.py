@@ -16,11 +16,11 @@ class TestCustomDataset:
 
     def test_directory_not_exist(self):
         with pytest.raises(FileNotFoundError) as _:
-            utils.CustomDataset.spawn('./not_exist', window_size=utils.window_size)
+            utils.CustomDataset.spawn('./not_exist')
 
     def test_empty_directory(self):
         with pytest.raises(RuntimeError, match="Directory do not have valid data files!") as _:
-            utils.CustomDataset.spawn('./empty_directory', window_size=utils.window_size)
+            utils.CustomDataset.spawn('./empty_directory')
 
     @pytest.mark.parametrize(
         "test_input,expected",
